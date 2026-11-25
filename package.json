@@ -1,0 +1,13 @@
+{
+  "name": "fiadoya",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Crédito comercial multitienda — SI642 UPC",
+  "scripts": {
+    "setup": "node scripts/setup-env.cjs",
+    "demo": "node scripts/demo-seed.cjs",
+    "up": "docker compose up --build -d",
+    "test:backend": "docker compose -f docker-compose.test.yml run --rm tests",
+    "test:e2e": "npm --prefix frontend run test:e2e"
+  }
+}

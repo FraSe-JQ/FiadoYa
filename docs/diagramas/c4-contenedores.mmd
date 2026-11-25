@@ -1,0 +1,11 @@
+C4Container
+  title FiadoYa — contenedores
+  Person(user, "Usuario autorizado")
+  System_Boundary(fiadoya, "FiadoYa") {
+    Container(frontend, "Angular y Nginx", "Angular 21 / TypeScript", "Presentación y proxy inverso")
+    Container(backend, "Backend", "Java 21 / Spring Boot", "API REST y reglas del crédito")
+    ContainerDb(database, "Base de datos", "MySQL 8.4.7", "Operaciones e historial")
+  }
+  Rel(user, frontend, "Utiliza", "HTTP local / HTTPS propuesto")
+  Rel(frontend, backend, "Solicita", "REST/JSON + JWT/CSRF")
+  Rel(backend, database, "Persiste", "JDBC/JPA")

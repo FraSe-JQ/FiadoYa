@@ -1,0 +1,19 @@
+flowchart TB
+  API[Controladores REST] --> IAM[Autorización y sesión]
+  API --> Sales[SalesService]
+  API --> Payment[PaymentService]
+  API --> Reports[Reportes / cierres]
+  Sales --> Financial[FinancialCalculationService]
+  Financial --> Rates[InterestRateConverter]
+  Financial --> Cycle[BillingCycleCalculator]
+  Financial --> Grace[GracePeriodCalculator]
+  Financial --> French[FrenchAmortizationCalculator]
+  Financial --> Compensatory[CompensatoryInterestCalculator]
+  Payment --> Late[LateInterestCalculator]
+  Payment --> Allocation[PaymentAllocationCalculator]
+  Grace --> Days[CommercialDayCalculator]
+  Late --> Days
+  Sales --> Data[Data / JPA]
+  Payment --> Data
+  Reports --> Data
+  Data --> MySQL[(MySQL)]

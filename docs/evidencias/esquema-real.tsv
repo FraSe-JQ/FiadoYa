@@ -1,0 +1,162 @@
+TABLE_NAME	COLUMN_NAME	COLUMN_TYPE	IS_NULLABLE	COLUMN_KEY
+audit_logs	id	bigint	NO	PRI
+audit_logs	actor_id	bigint	YES	MUL
+audit_logs	store_id	bigint	YES	MUL
+audit_logs	action	varchar(255)	YES	
+audit_logs	resource	varchar(255)	YES	
+audit_logs	occurred_at	datetime(6)	YES	
+auth_sessions	id	bigint	NO	PRI
+auth_sessions	user_id	bigint	YES	MUL
+auth_sessions	token_id	varchar(255)	YES	UNI
+auth_sessions	expires_at	datetime(6)	YES	MUL
+auth_sessions	revoked	bit(1)	NO	
+billing_cycles	id	bigint	NO	PRI
+billing_cycles	store_id	bigint	YES	MUL
+billing_cycles	account_id	bigint	YES	MUL
+billing_cycles	cutoff	datetime(6)	YES	
+billing_cycles	generated_at	datetime(6)	YES	
+billing_cycles	snapshot_json	longtext	YES	
+credit_accounts	id	bigint	NO	PRI
+credit_accounts	store_id	bigint	YES	MUL
+credit_accounts	customer_id	bigint	YES	UNI
+credit_accounts	currency	varchar(255)	YES	
+credit_accounts	used	decimal(24,10)	YES	
+credit_terms	id	bigint	NO	PRI
+credit_terms	account_id	bigint	YES	MUL
+credit_terms	currency	varchar(255)	YES	
+credit_terms	credit_limit	decimal(24,10)	YES	
+credit_terms	max_months	int	NO	
+credit_terms	cutoff_day	int	NO	
+credit_terms	cutoff_time	time(6)	YES	
+credit_terms	payment_day	int	NO	
+credit_terms	compensatory_percent	decimal(24,10)	YES	
+credit_terms	compensatory_type	varchar(255)	YES	
+credit_terms	compensatory_period	int	NO	
+credit_terms	compensatory_capitalization	int	NO	
+credit_terms	penalty_percent	decimal(24,10)	YES	
+credit_terms	penalty_type	varchar(255)	YES	
+credit_terms	penalty_period	int	NO	
+credit_terms	penalty_capitalization	int	NO	
+credit_terms	created_at	datetime(6)	YES	
+customers	id	bigint	NO	PRI
+customers	store_id	bigint	YES	MUL
+customers	user_id	bigint	YES	MUL
+customers	document_type	varchar(255)	YES	
+customers	document_number	varchar(255)	YES	
+customers	first_name	varchar(255)	YES	
+customers	last_name	varchar(255)	YES	
+customers	email	varchar(255)	YES	
+customers	phone	varchar(255)	YES	
+customers	address	varchar(255)	YES	
+customers	consent	bit(1)	NO	
+customers	active	bit(1)	NO	
+flyway_schema_history	installed_rank	int	NO	PRI
+flyway_schema_history	version	varchar(50)	YES	
+flyway_schema_history	description	varchar(200)	NO	
+flyway_schema_history	type	varchar(20)	NO	
+flyway_schema_history	script	varchar(1000)	NO	
+flyway_schema_history	checksum	int	YES	
+flyway_schema_history	installed_by	varchar(100)	NO	
+flyway_schema_history	installed_on	timestamp	NO	
+flyway_schema_history	execution_time	int	NO	
+flyway_schema_history	success	tinyint(1)	NO	MUL
+help_articles	id	bigint	NO	PRI
+help_articles	title	varchar(255)	YES	
+help_articles	content	longtext	YES	
+interest_rate_limits	id	bigint	NO	PRI
+interest_rate_limits	currency	varchar(255)	YES	MUL
+interest_rate_limits	kind	varchar(255)	YES	
+interest_rate_limits	max_tea_percent	decimal(24,10)	YES	
+interest_rate_limits	valid_from	date	YES	
+interest_rate_limits	valid_until	date	YES	
+interest_rate_limits	source	varchar(255)	YES	
+payment_allocations	id	bigint	NO	PRI
+payment_allocations	payment_id	bigint	YES	MUL
+payment_allocations	obligation_id	bigint	YES	UNI
+payment_allocations	penalty	decimal(24,10)	YES	
+payment_allocations	interest	decimal(24,10)	YES	
+payment_allocations	principal	decimal(24,10)	YES	
+payment_obligations	id	bigint	NO	PRI
+payment_obligations	store_id	bigint	YES	MUL
+payment_obligations	account_id	bigint	YES	MUL
+payment_obligations	purchase_id	bigint	YES	MUL
+payment_obligations	number	int	NO	
+payment_obligations	due_date	date	YES	
+payment_obligations	opening	decimal(24,10)	YES	
+payment_obligations	interest	decimal(24,10)	YES	
+payment_obligations	principal	decimal(24,10)	YES	
+payment_obligations	amount	decimal(24,10)	YES	
+payment_obligations	closing	decimal(24,10)	YES	
+payment_obligations	paid	bit(1)	NO	
+payments	id	bigint	NO	PRI
+payments	store_id	bigint	NO	MUL
+payments	account_id	bigint	NO	MUL
+payments	actor_id	bigint	YES	MUL
+payments	request_key	varchar(255)	NO	
+payments	request_hash	varchar(255)	YES	
+payments	paid_at	date	YES	
+payments	received	decimal(24,10)	YES	
+payments	penalty	decimal(24,10)	YES	
+payments	interest	decimal(24,10)	YES	
+payments	principal	decimal(24,10)	YES	
+payments	remaining_capital	decimal(24,10)	YES	
+payments	method	varchar(255)	YES	
+products	id	bigint	NO	PRI
+products	store_id	bigint	YES	MUL
+products	code	varchar(255)	YES	
+products	name	varchar(255)	YES	
+products	description	varchar(255)	YES	
+products	supplier	varchar(255)	YES	
+products	brand	varchar(255)	YES	
+products	unit	varchar(255)	YES	
+products	image_url	varchar(1000)	YES	
+products	cash_price	decimal(24,10)	YES	
+products	credit_price	decimal(24,10)	YES	
+products	currency	varchar(255)	YES	
+products	mode	varchar(255)	YES	
+products	active	bit(1)	NO	
+purchase_items	id	bigint	NO	PRI
+purchase_items	purchase_id	bigint	YES	MUL
+purchase_items	product_id	bigint	YES	MUL
+purchase_items	product_name	varchar(255)	YES	
+purchase_items	quantity	decimal(24,10)	YES	
+purchase_items	cash_price	decimal(24,10)	YES	
+purchase_items	credit_price	decimal(24,10)	YES	
+purchase_items	unit_price	decimal(24,10)	YES	
+purchase_items	subtotal	decimal(24,10)	YES	
+purchases	id	bigint	NO	PRI
+purchases	store_id	bigint	NO	MUL
+purchases	account_id	bigint	NO	MUL
+purchases	actor_id	bigint	YES	MUL
+purchases	request_key	varchar(255)	NO	
+purchases	request_hash	varchar(255)	YES	
+purchases	purchased_at	datetime(6)	YES	
+purchases	mode	varchar(255)	YES	
+purchases	months	int	NO	
+purchases	currency	varchar(255)	YES	
+purchases	financed	decimal(24,10)	YES	
+purchases	capitalized	decimal(24,10)	YES	
+purchases	grace_interest	decimal(24,10)	YES	
+purchases	cutoff	datetime(6)	YES	
+purchases	period_zero	date	YES	
+purchases	terms_json	longtext	NO	
+store_memberships	id	bigint	NO	PRI
+store_memberships	store_id	bigint	YES	MUL
+store_memberships	user_id	bigint	YES	MUL
+stores	id	bigint	NO	PRI
+stores	name	varchar(255)	NO	
+stores	business_type	varchar(255)	NO	
+stores	address	varchar(255)	YES	
+stores	phone	varchar(255)	YES	
+stores	active	bit(1)	NO	
+support_tickets	id	bigint	NO	PRI
+support_tickets	user_id	bigint	YES	MUL
+support_tickets	subject	varchar(255)	YES	
+support_tickets	message	longtext	YES	
+support_tickets	created_at	datetime(6)	YES	
+users	id	bigint	NO	PRI
+users	email	varchar(255)	NO	UNI
+users	password_hash	varchar(255)	NO	
+users	name	varchar(255)	YES	
+users	role	varchar(255)	NO	
+users	active	bit(1)	NO	

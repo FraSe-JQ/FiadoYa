@@ -1,0 +1,9 @@
+C4Context
+  title FiadoYa — contexto
+  Person(platform, "Administrador de plataforma", "Gestiona establecimientos y accesos")
+  Person(merchant, "Administrador de comercio", "Registra ventas y recibe pagos")
+  Person(customer, "Cliente", "Consulta sus propias cuentas")
+  System(system, "FiadoYa", "Cuentas corrientes y crédito comercial multitienda")
+  Rel(platform, system, "Administra")
+  Rel(merchant, system, "Opera")
+  Rel(customer, system, "Consulta")

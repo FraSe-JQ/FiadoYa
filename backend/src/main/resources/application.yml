@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/fiadoya?connectionTimeZone=America/Lima}
+    username: ${DB_USER:fiadoya}
+    password: ${DB_PASSWORD}
+    hikari:
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  jackson:
+    time-zone: America/Lima
+    deserialization:
+      accept-float-as-int: false
+server:
+  error:
+    include-message: never
+  forward-headers-strategy: framework
+app:
+  jwt-secret: ${JWT_SECRET}
+  bootstrap-email: ${BOOTSTRAP_EMAIL:}
+  bootstrap-password: ${BOOTSTRAP_PASSWORD:}
+  cors-origin: ${CORS_ORIGIN:http://localhost:4200}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

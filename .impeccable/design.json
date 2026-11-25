@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-25T00:29:04.507974+00:00",
+  "title": "Design System: FiadoYa",
+  "extensions": {
+    "colorMeta": {
+      "blue": {
+        "role": "primary",
+        "displayName": "Azul operativo"
+      },
+      "green": {
+        "role": "secondary",
+        "displayName": "Verde de identidad"
+      }
+    },
+    "shadows": [
+      {
+        "name": "context-help",
+        "value": "0 6px 20px #0f172a26",
+        "purpose": "Ayuda contextual superpuesta."
+      },
+      {
+        "name": "mobile-sidebar",
+        "value": "5px 0 20px #0f172a15",
+        "purpose": "Navegación móvil superpuesta."
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1600px"
+      },
+      {
+        "name": "compact-desktop",
+        "value": "1150px"
+      },
+      {
+        "name": "mobile",
+        "value": "780px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary button",
+      "html": "<button class=\"ds-primary\">Consultar cuenta</button>",
+      "css": ".ds-primary{font-family:Inter,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:42px;padding:.65rem 1rem;border:1px solid transparent;border-radius:7px;background:var(--blue,#1e3a8a);color:white;font-size:.875rem;font-weight:600;cursor:pointer;line-height:1.4;}.ds-primary:hover{background:#172f73;}.ds-primary:focus-visible{outline:3px solid #60a5fa;outline-offset:3px;}.ds-primary:disabled{opacity:.55;cursor:wait;}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary button",
+      "html": "<button class=\"ds-secondary\">Consultar cuenta</button>",
+      "css": ".ds-secondary{font-family:Inter,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:42px;padding:.65rem 1rem;border:1px solid transparent;border-radius:7px;background:var(--blue,#1e3a8a);color:white;font-size:.875rem;font-weight:600;cursor:pointer;line-height:1.4;background:white;color:var(--blue,#1e3a8a);border-color:#cbd5e1;}.ds-secondary:hover{background:#f1f5f9;}.ds-secondary:focus-visible{outline:3px solid #60a5fa;outline-offset:3px;}.ds-secondary:disabled{opacity:.55;cursor:wait;}"
+    },
+    {
+      "name": "Text button",
+      "kind": "button",
+      "description": "Text button",
+      "html": "<button class=\"ds-text\">Consultar cuenta</button>",
+      "css": ".ds-text{font-family:Inter,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:42px;padding:.65rem 1rem;border:1px solid transparent;border-radius:7px;background:var(--blue,#1e3a8a);color:white;font-size:.875rem;font-weight:600;cursor:pointer;line-height:1.4;background:transparent;color:var(--blue,#1e3a8a);padding:.25rem .4rem;min-height:36px;white-space:nowrap;}.ds-text:hover{background:#eef2ff;}.ds-text:focus-visible{outline:3px solid #60a5fa;outline-offset:3px;}.ds-text:disabled{opacity:.55;cursor:wait;}"
+    },
+    {
+      "name": "Text field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Text field",
+      "html": "<label class=\"ds-label\" for=\"ds-client\">Cliente</label><input class=\"ds-input\" id=\"ds-client\" placeholder=\"Nombre o documento\">",
+      "css": ".ds-label{font-family:Inter,Arial,sans-serif;display:block;font-size:.875rem;font-weight:500;margin-bottom:.45rem;}.ds-input{font-family:Inter,Arial,sans-serif;display:block;width:100%;border:1px solid #cbd5e1;border-radius:6px;background:white;color:#1e293b;padding:.7rem .8rem;min-height:44px;font-size:.875rem;line-height:1.4;}.ds-input:focus-visible{outline:3px solid #60a5fa;outline-offset:3px;}.ds-input:disabled{background:#f1f5f9;}"
+    },
+    {
+      "name": "Status tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Status tag",
+      "html": "<span class=\"ds-tag\">Activo</span>",
+      "css": ".ds-tag{font-family:Inter,Arial,sans-serif;display:inline-block;font-size:.675rem;font-weight:600;color:#047857;background:#ecfdf5;border-radius:4px;padding:.25rem .5rem;white-space:nowrap;}"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Panel",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-title\">Tu cartera en detalle</h2></section>",
+      "css": ".ds-panel{font-family:Inter,Arial,sans-serif;background:white;border:1px solid var(--line,#e2e8f0);border-radius:9px;padding:1.4rem;min-width:0;color:#1e293b;}.ds-title{margin:0 0 1rem;font-size:1.125rem;font-weight:650;letter-spacing:-.02em;}"
+    },
+    {
+      "name": "Selected navigation",
+      "kind": "nav",
+      "description": "Selected navigation",
+      "html": "<nav class=\"ds-nav\"><button class=\"ds-nav-item\" aria-current=\"page\">Resumen</button></nav>",
+      "css": ".ds-nav-item{font-family:Inter,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:42px;padding:.65rem 1rem;border:1px solid transparent;border-radius:7px;background:var(--blue,#1e3a8a);color:white;font-size:.875rem;font-weight:600;cursor:pointer;line-height:1.4;justify-content:flex-start;background:#edf2fc;color:#1e3a8a;font-weight:650;border-radius:6px;padding:.7rem .8rem;gap:.8rem;}.ds-nav-item:hover{background:#f1f5f9;}.ds-nav-item:focus-visible{outline:3px solid #60a5fa;outline-offset:3px;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Consola operativa sobria",
+    "overview": "La dirección fijada por el usuario se materializa en superficies claras, tipografía Inter y jerarquía financiera. La densidad permite consultar importes, condiciones y movimientos sin perder el contexto del comercio activo.\n\nEste registro describe el código implementado; la fuente visual normativa es `frontend/src/styles.css`, junto con los componentes Angular. No registra referencias visuales externas aprobadas.",
+    "keyCharacteristics": [
+      "Superficies blancas sobre fondo frío y separadores finos.",
+      "Azul para acciones y énfasis; verde para identidad y estados positivos.",
+      "Importes alineados y ayudas junto a los campos."
+    ],
+    "rules": [
+      {
+        "name": "The Estado con texto Rule",
+        "body": "Las etiquetas conservan nombres visibles de estado además del color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cifra alineada Rule",
+        "body": "Las columnas numéricas se alinean a la derecha y emplean cifras tabulares; las métricas también usan cifras tabulares.",
+        "section": "typography"
+      },
+      {
+        "name": "The Panel plano Rule",
+        "body": "Los paneles de trabajo usan superficie blanca y borde fino; las capas superpuestas concentran las sombras observadas.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** conservar el contexto del comercio activo y las etiquetas persistentes de campos.",
+      "**Do** usar cifras tabulares y alineación derecha en columnas monetarias.",
+      "**Do** mantener foco visible y ayuda contextual accesible por teclado.",
+      "**Do** conservar la adaptación a una columna y el desplazamiento interno de tablas en móvil."
+    ],
+    "donts": [
+      "**Don't** sustituir el estado escrito por un indicador basado solo en color.",
+      "**Don't** convertir los paneles planos de operación en tarjetas con sombras decorativas.",
+      "**Don't** introducir animaciones innecesarias en esta interfaz sobria."
+    ]
+  }
+}

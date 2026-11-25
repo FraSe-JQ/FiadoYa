@@ -1,0 +1,125 @@
+{
+  "collectedAt": "2026-11-25T00:44:02.642Z",
+  "backend": {
+    "totals": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "reports": [
+      {
+        "name": "pe.fiadoya.finance.domain.BillingCycleCalculatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.CommercialDayCalculatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.CompensatoryInterestCalculatorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.FinancialCalculationServiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.FrenchAmortizationCalculatorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.GracePeriodCalculatorTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.InterestRateConverterTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.LateInterestCalculatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.finance.domain.PaymentAllocationCalculatorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.reporting.domain.EffectiveYieldCalculatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      },
+      {
+        "name": "pe.fiadoya.WorkflowIntegrationTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "javaVersion": "21.0.9"
+      }
+    ]
+  },
+  "playwright": {
+    "startTime": "2026-11-25T00:42:32.601Z",
+    "duration": 24661.837,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "frontendProductionAudit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "frontendCompleteAudit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 16,
+    "high": 0,
+    "critical": 0,
+    "total": 16
+  }
+}

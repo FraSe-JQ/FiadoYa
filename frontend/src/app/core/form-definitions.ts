@@ -1,0 +1,338 @@
+import { EditorField } from "../shared/editor.component";
+const options = (values: string[]) =>
+  values.map((value) => ({ value, label: value }));
+export const storeFields: EditorField[] = [
+  {
+    key: "name",
+    label: "Nombre del comercio",
+    help: "Identifica el establecimiento. Texto hasta 150 caracteres. Ejemplo: Bodega El Vecino.",
+  },
+  {
+    key: "businessType",
+    label: "Giro comercial",
+    help: "Actividad principal del negocio. Ejemplo: Bodega o Peluquería. Hasta 100 caracteres.",
+  },
+  {
+    key: "address",
+    label: "Dirección",
+    help: "Ubicación del local. Ejemplo: Av. Lima 120. Opcional, hasta 250 caracteres.",
+    required: false,
+  },
+  {
+    key: "phone",
+    label: "Teléfono",
+    help: "Contacto del comercio. Ejemplo: 999111222. Hasta 25 caracteres; números, espacios y signo +.",
+    required: false,
+  },
+  {
+    key: "active",
+    label: "Comercio activo",
+    type: "checkbox",
+    help: "Permite nuevas operaciones. Desmarcar conserva el historial; solo la plataforma puede desactivar.",
+  },
+];
+export const productFields: EditorField[] = [
+  {
+    key: "code",
+    label: "Código interno",
+    help: "Código único en este comercio. Ejemplo: AR-01. Hasta 50 caracteres.",
+  },
+  {
+    key: "name",
+    label: "Producto o servicio",
+    help: "Nombre reconocible en el punto de venta. Ejemplo: Arroz 5 kg. Hasta 150 caracteres.",
+  },
+  {
+    key: "description",
+    label: "Descripción",
+    help: "Detalle comercial. Ejemplo: Arroz extra embolsado. Opcional, hasta 250 caracteres.",
+    required: false,
+  },
+  {
+    key: "supplier",
+    label: "Proveedor",
+    help: "Nombre del proveedor, si corresponde. Ejemplo: Distribuidora local. Opcional, hasta 100 caracteres.",
+    required: false,
+  },
+  {
+    key: "brand",
+    label: "Marca",
+    help: "Marca del producto. Ejemplo: Marca local. Opcional, hasta 100 caracteres.",
+    required: false,
+  },
+  {
+    key: "unit",
+    label: "Unidad de medida",
+    help: "Unidad de venta. Ejemplo: unidad, kg o servicio. Hasta 50 caracteres.",
+  },
+  {
+    key: "imageUrl",
+    label: "Imagen (URL)",
+    help: "Imagen del catálogo. Ejemplo: https://su-dominio/imagen.jpg. URL HTTPS o ruta local; opcional.",
+    required: false,
+  },
+  {
+    key: "cashPrice",
+    label: "Precio al contado",
+    type: "number",
+    min: 0.01,
+    step: "0.01",
+    help: "Base del capital financiado, sin intereses incorporados. Ejemplo: 52.00. Positivo, máximo 2 decimales.",
+  },
+  {
+    key: "creditPrice",
+    label: "Precio de lista al crédito",
+    type: "number",
+    min: 0.01,
+    step: "0.01",
+    help: "Precio comercial de referencia independiente. Ejemplo: 55.00. Se conserva sin volver a financiar intereses incluidos.",
+  },
+  {
+    key: "currency",
+    label: "Moneda",
+    options: options(["PEN", "USD"]),
+    help: "Moneda de los precios. PEN: soles; USD: dólares. Debe coincidir con la cuenta del cliente.",
+  },
+  {
+    key: "mode",
+    label: "Modalidades permitidas",
+    options: [
+      { value: "BOTH", label: "Fin de mes y cuotas" },
+      { value: "MONTH_END", label: "Fin de mes" },
+      { value: "INSTALLMENTS", label: "Cuotas" },
+    ],
+    help: "Financiamiento permitido al vender. Ejemplo: ambas modalidades. El servidor comprueba esta condición.",
+  },
+  {
+    key: "active",
+    label: "Producto activo",
+    type: "checkbox",
+    help: "Habilita nuevas ventas. Desactivar conserva todas las compras anteriores.",
+  },
+];
+export const customerFields: EditorField[] = [
+  {
+    key: "documentType",
+    label: "Tipo de documento",
+    options: options(["DNI", "RUC", "CE"]),
+    section: "Identificación y contacto",
+    help: "Identificación declarada. Ejemplo: DNI. Se valida el formato; no se consulta RENIEC ni SUNAT.",
+  },
+  {
+    key: "documentNumber",
+    label: "Número de documento",
+    help: "DNI: 8 dígitos; RUC: 11; CE: 8–12 alfanuméricos. Ejemplo: 72839401. Único por comercio y tipo.",
+  },
+  {
+    key: "firstName",
+    label: "Nombres",
+    help: "Nombres del cliente. Ejemplo: Juan Alberto. Obligatorio, hasta 100 caracteres.",
+  },
+  {
+    key: "lastName",
+    label: "Apellidos",
+    help: "Apellidos del cliente. Ejemplo: Pérez Gómez. Obligatorio, hasta 100 caracteres.",
+  },
+  {
+    key: "email",
+    label: "Correo electrónico",
+    type: "email",
+    required: false,
+    help: "Contacto y verificación de vinculación. Ejemplo: cliente@example.test. Formato de correo válido, opcional.",
+  },
+  {
+    key: "phone",
+    label: "Teléfono",
+    required: false,
+    help: "Contacto del cliente. Ejemplo: 999111222. Opcional, hasta 25 caracteres.",
+  },
+  {
+    key: "address",
+    label: "Dirección",
+    required: false,
+    help: "Domicilio del cliente, si corresponde. Ejemplo: Jr. Lima 120. Opcional, hasta 250 caracteres.",
+  },
+  {
+    key: "userId",
+    label: "ID de usuario vinculado",
+    type: "number",
+    required: false,
+    min: 1,
+    step: "1",
+    help: "Acceso de consulta del cliente. Ejemplo: 3. Opcional; usuario registrado, mismo correo y consentimiento requerido.",
+  },
+  {
+    key: "consent",
+    label: "Consentimiento registrado",
+    type: "checkbox",
+    help: "Confirma autorización para vincular la cuenta al usuario. Registrar únicamente con consentimiento real.",
+  },
+  {
+    key: "active",
+    label: "Cliente activo",
+    type: "checkbox",
+    help: "Habilita nuevas compras. Desactivar no elimina deuda ni impide consultar su historial.",
+  },
+  {
+    key: "currency",
+    label: "Moneda del crédito",
+    options: options(["PEN", "USD"]),
+    section: "Línea y calendario",
+    help: "PEN: soles; USD: dólares. Ejemplo: PEN. La moneda no cambia después de crear la cuenta.",
+  },
+  {
+    key: "creditLimit",
+    label: "Límite de crédito",
+    type: "number",
+    min: 0.01,
+    step: "0.01",
+    help: "Máximo capital y gracia capitalizada en uso. Ejemplo: 1000.00. Positivo y no inferior al capital utilizado.",
+  },
+  {
+    key: "maxMonths",
+    label: "Plazo máximo (meses)",
+    type: "number",
+    min: 1,
+    max: 120,
+    step: "1",
+    help: "Número máximo de cuotas permitido. Ejemplo: 3. Entero entre 1 y 120.",
+  },
+  {
+    key: "cutoffDay",
+    label: "Día mensual de corte",
+    type: "number",
+    min: 1,
+    max: 31,
+    step: "1",
+    help: "Asigna el ciclo de compra. Ejemplo: 15. Entero 1–31; meses cortos usan su último día.",
+  },
+  {
+    key: "cutoffTime",
+    label: "Hora de corte",
+    type: "time",
+    help: "Hora local de Lima. Ejemplo: 23:59. Una compra exactamente en el corte pertenece al ciclo actual.",
+  },
+  {
+    key: "paymentDay",
+    label: "Día mensual de pago",
+    type: "number",
+    min: 1,
+    max: 31,
+    step: "1",
+    help: "Vencimiento mensual pactado. Ejemplo: 25. Entero 1–31, limitado al fin de meses cortos.",
+  },
+  ...(["compensatory", "penalty"] as const).flatMap((prefix): EditorField[] => [
+    {
+      key: prefix + "Percent",
+      label: "Tasa (%)",
+      section:
+        prefix === "compensatory"
+          ? "Interés compensatorio"
+          : "Interés moratorio",
+      type: "number",
+      min: 0,
+      max: 1000,
+      step: "0.0000001",
+      help: "Porcentaje del periodo seleccionado. Ejemplo: 24.0000000 equivale a 24%, no a 0.24%. Rango técnico 0–1000; sujeto a límites vigentes configurados.",
+    },
+    {
+      key: prefix + "Type",
+      label: "Tipo de tasa",
+      options: options(["NOMINAL", "EFFECTIVE"]),
+      help: "NOMINAL requiere frecuencia de capitalización; EFFECTIVE ya incorpora capitalización. Ejemplo: NOMINAL.",
+    },
+    {
+      key: prefix + "Period",
+      label: "Periodicidad (días)",
+      options: [
+        { value: 360, label: "Anual · 360 días" },
+        { value: 180, label: "Semestral · 180 días" },
+        { value: 90, label: "Trimestral · 90 días" },
+        { value: 30, label: "Mensual · 30 días" },
+        { value: 1, label: "Diaria · 1 día" },
+      ],
+      help: "Periodo comercial al que corresponde el porcentaje. Ejemplo: 360 para una tasa anual. No son días calendario.",
+    },
+    {
+      key: prefix + "Capitalization",
+      label: "Capitalización (días)",
+      type: "number",
+      min: 1,
+      max: 360,
+      step: "1",
+      help: "Frecuencia de capitalización nominal. Ejemplo: 30 para mensual. Debe dividir el periodo original; en tasa efectiva se ignora.",
+    },
+  ]),
+];
+export const defaultCustomer = {
+  documentType: "DNI",
+  documentNumber: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  address: "",
+  userId: null,
+  consent: false,
+  active: true,
+  currency: "PEN",
+  creditLimit: 1000,
+  maxMonths: 3,
+  cutoffDay: 15,
+  cutoffTime: "23:59",
+  paymentDay: 25,
+  compensatoryPercent: 24,
+  compensatoryType: "NOMINAL",
+  compensatoryPeriod: 360,
+  compensatoryCapitalization: 30,
+  penaltyPercent: 0,
+  penaltyType: "EFFECTIVE",
+  penaltyPeriod: 360,
+  penaltyCapitalization: 30,
+};
+export function customerPayload(values: Record<string, any>) {
+  const rate = (prefix: string) => ({
+    percent: values[prefix + "Percent"],
+    type: values[prefix + "Type"],
+    periodDays: Number(values[prefix + "Period"]),
+    capitalizationDays: Number(values[prefix + "Capitalization"]),
+  });
+  return {
+    userId: values["userId"] || null,
+    documentType: values["documentType"],
+    documentNumber: values["documentNumber"],
+    firstName: values["firstName"],
+    lastName: values["lastName"],
+    email: values["email"] || "",
+    phone: values["phone"] || "",
+    address: values["address"] || "",
+    consent: !!values["consent"],
+    active: !!values["active"],
+    terms: {
+      currency: values["currency"],
+      creditLimit: values["creditLimit"],
+      maxMonths: values["maxMonths"],
+      cutoffDay: values["cutoffDay"],
+      cutoffTime: values["cutoffTime"],
+      paymentDay: values["paymentDay"],
+      compensatory: rate("compensatory"),
+      penalty: rate("penalty"),
+    },
+  };
+}
+export function flattenCustomer(entry: any) {
+  const c = entry.customer,
+    t = entry.terms;
+  return {
+    ...c,
+    ...t,
+    compensatoryPercent: t.compensatory.percent,
+    compensatoryType: t.compensatory.type,
+    compensatoryPeriod: t.compensatory.periodDays,
+    compensatoryCapitalization: t.compensatory.capitalizationDays || 30,
+    penaltyPercent: t.penalty.percent,
+    penaltyType: t.penalty.type,
+    penaltyPeriod: t.penalty.periodDays,
+    penaltyCapitalization: t.penalty.capitalizationDays || 30,
+  };
+}

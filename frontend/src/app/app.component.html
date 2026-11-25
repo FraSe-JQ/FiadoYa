@@ -1,0 +1,805 @@
+@if (!initialized) {
+  <div class="boot" role="status">Preparando FiadoYa…</div>
+} @else if (!user) {
+  <fy-auth (authenticated)="authenticated($event)" />
+} @else {
+  <div class="app-shell">
+    <aside class="sidebar" [class.mobile-open]="mobileNav">
+      <a class="brand" href="/">Fiado<span>Ya</span><b>F</b></a>
+      <p class="sidebar-caption">GESTIÓN DE CRÉDITOS</p>
+      <nav aria-label="Navegación principal">
+        @for (item of visibleNav(); track item.id) {
+          <button
+            type="button"
+            [class.selected]="page === item.id"
+            (click)="navigate(item.id)"
+          >
+            <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span
+            >{{ item.label }}
+          </button>
+        }
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="small-logo">FY</span>
+        <div>
+          <strong>Tu comercio, en orden</strong
+          ><small>Finanzas claras cada día</small>
+        </div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button
+          class="mobile-toggle secondary"
+          type="button"
+          aria-label="Abrir navegación"
+          (click)="mobileNav = !mobileNav"
+        >
+          ☰
+        </button>
+        <div class="store-switch">
+          <label class="sr-only" for="store-switch"
+            >Establecimiento activo</label
+          ><select
+            id="store-switch"
+            [(ngModel)]="storeId"
+            (ngModelChange)="editorType = ''; loadStore()"
+            aria-describedby="store-help"
+          >
+            @for (store of stores; track store.id) {
+              <option [ngValue]="store.id">
+                {{ store.name }}{{ store.active ? "" : " · Inactivo" }}
+              </option>
+            } @empty {
+              <option [ngValue]="null">Sin establecimiento asignado</option>
+            }
+          </select>
+          <details id="store-help" class="inline-help">
+            <summary aria-label="Ayuda: establecimiento activo">?</summary>
+            <p>
+              Selecciona el comercio autorizado que deseas consultar. Ejemplo:
+              Bodega El Vecino. Los recursos pertenecen exclusivamente a ese
+              comercio.
+            </p>
+          </details>
+        </div>
+        <div class="user-menu">
+          <div class="user-label">
+            <strong>{{ user.name }}</strong
+            ><small>{{
+              isPlatform()
+                ? "Administrador de plataforma"
+                : isCustomer()
+                  ? "Cliente"
+                  : "Administrador de comercio"
+            }}</small>
+          </div>
+          <span class="avatar small">{{ user.name.slice(0, 1) }}</span
+          ><button type="button" class="text-button logout" (click)="logout()">
+            Salir
+          </button>
+        </div>
+      </header>
+      <main class="main-content">
+        <div class="breadcrumb">Mi espacio <span>/</span> {{ title() }}</div>
+        @if (clock?.demo) {
+          <div class="demo-banner">
+            <span>Entorno de demostración · Datos ficticios</span
+            ><strong
+              >{{ clock.dateTime | date: "dd/MM/yyyy HH:mm" }} · Lima</strong
+            >
+          </div>
+        }
+        @if (error) {
+          <p class="alert error" role="alert">{{ error }}</p>
+        }
+        @if (message) {
+          <p class="alert success" role="status">{{ message }}</p>
+        }
+        @if (busy) {
+          <p class="loading" role="status">Actualizando información…</p>
+        }
+        @if (editorType) {
+          <div class="section-heading">
+            <div>
+              <h1>
+                {{ editingId ? "Editar" : "Registrar" }}
+                {{
+                  editorType === "store"
+                    ? "establecimiento"
+                    : editorType === "customer"
+                      ? "cliente"
+                      : editorType === "product"
+                        ? "producto"
+                        : editorType === "article"
+                          ? "ayuda"
+                          : "límite de tasa"
+                }}
+              </h1>
+              <p>
+                Consulta el símbolo ? de cada campo para ver su formato y
+                restricciones.
+              </p>
+            </div>
+          </div>
+          <section class="panel">
+            <fy-editor
+              [fields]="fields"
+              [initial]="initial"
+              [busy]="busy"
+              (saved)="save($event)"
+              (cancel)="editorType = ''"
+            />
+          </section>
+        } @else if (page === "stores") {
+          <div class="section-heading">
+            <div>
+              <h1>Establecimientos</h1>
+              <p>Comercios autorizados e historial independiente.</p>
+            </div>
+            @if (isPlatform()) {
+              <button type="button" (click)="openEditor('store')">
+                + Registrar comercio
+              </button>
+            }
+          </div>
+          <section class="panel">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Comercio</th>
+                    <th>Giro comercial</th>
+                    <th>Dirección</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (store of stores; track store.id) {
+                    <tr>
+                      <td>
+                        <strong>{{ store.name }}</strong>
+                      </td>
+                      <td>{{ store.businessType }}</td>
+                      <td>{{ store.address || "—" }}</td>
+                      <td>
+                        <span class="tag" [class.inactive]="!store.active">{{
+                          store.active ? "Activo" : "Inactivo"
+                        }}</span>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="text-button"
+                          (click)="openEditor('store', store)"
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="5" class="empty">
+                        Aún no hay establecimientos registrados.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        } @else if (page === "help") {
+          <div class="section-heading">
+            <div>
+              <h1>Ayuda y soporte</h1>
+              <p>Guías para operar y entender tus cuentas.</p>
+            </div>
+          </div>
+          <div class="two-columns">
+            <section class="panel">
+              <h2>Manual y preguntas frecuentes</h2>
+              @for (article of articles; track article.id) {
+                <details class="help-article">
+                  <summary>{{ article.title }}</summary>
+                  <p>{{ article.content }}</p>
+                  @if (isPlatform()) {
+                    <button
+                      type="button"
+                      class="text-button"
+                      (click)="openEditor('article', article)"
+                    >
+                      Editar contenido
+                    </button>
+                  }
+                </details>
+              }
+            </section>
+            <section class="panel">
+              <h2>Solicitar asistencia</h2>
+              <p>
+                El equipo revisará las solicitudes guardadas. No se envían a
+                canales externos.
+              </p>
+              <form (ngSubmit)="support()">
+                <fy-field
+                  label="Asunto"
+                  help="Resumen del problema. Ejemplo: No puedo registrar una compra. Obligatorio, hasta 150 caracteres."
+                  ><label class="sr-only" for="ticket-subject">Asunto</label
+                  ><input
+                    id="ticket-subject"
+                    name="subject"
+                    [(ngModel)]="supportSubject"
+                    required
+                    maxlength="150" /></fy-field
+                ><fy-field
+                  label="Descripción"
+                  help="Explica los pasos y el mensaje recibido. Ejemplo: Al confirmar la venta aparece crédito insuficiente. Hasta 4000 caracteres; no incluyas contraseñas."
+                  ><label class="sr-only" for="ticket-message"
+                    >Descripción</label
+                  ><textarea
+                    id="ticket-message"
+                    name="message"
+                    [(ngModel)]="supportMessage"
+                    required
+                    maxlength="4000"
+                  ></textarea></fy-field
+                ><button type="submit">Guardar solicitud</button>
+              </form>
+              <h3 class="spaced">Solicitudes registradas</h3>
+              @for (ticket of tickets; track ticket.id) {
+                <div class="movement">
+                  <div>
+                    <strong>#{{ ticket.id }} · {{ ticket.subject }}</strong
+                    ><small>{{
+                      ticket.createdAt | date: "dd/MM/yyyy HH:mm"
+                    }}</small>
+                  </div>
+                  <span class="tag">Recibida</span>
+                </div>
+              } @empty {
+                <p class="fine">Todavía no has registrado solicitudes.</p>
+              }
+            </section>
+          </div>
+        } @else if (page === "settings") {
+          <div class="section-heading">
+            <div>
+              <h1>Configuración</h1>
+              <p>Acceso, calendario y políticas de la plataforma.</p>
+            </div>
+          </div>
+          <div class="two-columns">
+            <section class="panel">
+              <h2>Mi cuenta</h2>
+              <dl>
+                <dt>Nombre</dt>
+                <dd>{{ user.name }}</dd>
+                <dt>Correo</dt>
+                <dd>{{ user.email }}</dd>
+                <dt>Identificador</dt>
+                <dd>{{ user.id }}</dd>
+                <dt>Rol</dt>
+                <dd>
+                  {{
+                    isPlatform()
+                      ? "Administrador de plataforma"
+                      : isCustomer()
+                        ? "Cliente"
+                        : "Administrador de comercio"
+                  }}
+                </dd>
+              </dl>
+              <p class="fine">
+                Tu sesión dura una hora. Cierra sesión al terminar,
+                especialmente si compartes este equipo. No compartas tu
+                contraseña.
+              </p>
+            </section>
+            @if (isPlatform()) {
+              <section class="panel">
+                <h2>Asignar administrador</h2>
+                <fy-field
+                  label="Usuario registrado"
+                  help="Usuario que administrará el comercio. Ejemplo: Ana Torres. Primero debe registrarse; no puede ser administrador de plataforma."
+                  ><label class="sr-only" for="assign-user"
+                    >Usuario registrado</label
+                  ><select id="assign-user" [(ngModel)]="assignUserId">
+                    <option [ngValue]="null">Seleccionar usuario</option>
+                    @for (candidate of users; track candidate.id) {
+                      @if (candidate.role !== "PLATFORM_ADMIN") {
+                        <option [ngValue]="candidate.id">
+                          #{{ candidate.id }} · {{ candidate.name }} ·
+                          {{ candidate.email }}
+                        </option>
+                      }
+                    }
+                  </select></fy-field
+                ><fy-field
+                  label="Comercio autorizado"
+                  help="Establecimiento que podrá administrar. Ejemplo: Bodega El Vecino. La asignación no otorga acceso a otros comercios."
+                  ><label class="sr-only" for="assign-store"
+                    >Comercio autorizado</label
+                  ><select id="assign-store" [(ngModel)]="assignStoreId">
+                    <option [ngValue]="null">Seleccionar comercio</option>
+                    @for (store of stores; track store.id) {
+                      <option [ngValue]="store.id">{{ store.name }}</option>
+                    }
+                  </select></fy-field
+                ><button
+                  type="button"
+                  [disabled]="!assignUserId || !assignStoreId"
+                  (click)="assign()"
+                >
+                  Asignar acceso
+                </button>
+              </section>
+              @if (clock?.demo) {
+                <section class="panel">
+                  <h2>Reloj de demostración</h2>
+                  <p>
+                    Permite demostrar corte, vencimiento y mora. No cambia el
+                    reloj real del servidor.
+                  </p>
+                  <fy-field
+                    label="Fecha y hora operativa"
+                    help="Fecha local de Lima para operaciones de demostración. Ejemplo: 2026-12-06 10:00. Disponible solo en perfil demo; afecta nuevas operaciones y consultas."
+                    ><label class="sr-only" for="demo-clock"
+                      >Fecha y hora operativa</label
+                    ><input
+                      id="demo-clock"
+                      type="datetime-local"
+                      [(ngModel)]="clockValue" /></fy-field
+                  ><button type="button" (click)="setClock()">
+                    Aplicar fecha de demostración
+                  </button>
+                </section>
+              }
+            }
+            <section class="panel">
+              <h2>Límites de tasas</h2>
+              <p>
+                Solo se aplican los límites registrados con moneda, vigencia y
+                fuente. No existen valores normativos predeterminados.
+              </p>
+              @for (limit of limits; track limit.id) {
+                <div class="movement">
+                  <div>
+                    <strong
+                      >{{ limit.currency }} · {{ limit.kind }} ·
+                      {{ limit.maxTeaPercent }}% TEA</strong
+                    ><small
+                      >{{ limit.validFrom }} — {{ limit.validUntil }}</small
+                    ><small>{{ limit.source }}</small>
+                  </div>
+                </div>
+              } @empty {
+                <p class="fine">
+                  Sin límites configurados. No se afirma cumplimiento legal
+                  integral.
+                </p>
+              }
+              @if (isPlatform()) {
+                <button
+                  class="secondary"
+                  type="button"
+                  (click)="openEditor('limit')"
+                >
+                  Registrar límite verificado
+                </button>
+              }
+            </section>
+          </div>
+        } @else if (!storeId) {
+          <section class="panel empty">
+            <h1>Tu espacio está listo</h1>
+            <p>
+              {{
+                isPlatform()
+                  ? "Registra el primer comercio para comenzar."
+                  : "La plataforma o el comercio debe asignarte acceso antes de operar."
+              }}
+            </p>
+            @if (isPlatform()) {
+              <button type="button" (click)="openEditor('store')">
+                Registrar establecimiento
+              </button>
+            }
+          </section>
+        } @else if (page === "sales") {
+          <fy-pos
+            [storeId]="storeId"
+            [customers]="customers"
+            [products]="products"
+            (completed)="loadStore()"
+          />
+        } @else if (page === "accounts") {
+          <fy-account
+            [storeId]="storeId"
+            [customers]="customers"
+            [readOnly]="isCustomer()"
+          />
+        } @else if (page === "customers") {
+          <div class="section-heading">
+            <div>
+              <h1>Clientes</h1>
+              <p>Acuerdos de crédito claros para cada cliente.</p>
+            </div>
+            <button type="button" (click)="openEditor('customer')">
+              + Registrar cliente
+            </button>
+          </div>
+          <section class="panel">
+            <fy-field
+              label="Buscar cliente"
+              help="Busca por nombres, apellidos o documento. Ejemplo: Pérez. Solo consulta clientes de este comercio."
+              ><label class="sr-only" for="customer-search"
+                >Buscar cliente</label
+              ><input
+                id="customer-search"
+                [(ngModel)]="query"
+                placeholder="Nombre o documento"
+            /></fy-field>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Documento</th>
+                    <th class="numeric">Límite</th>
+                    <th class="numeric">Utilizado</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (entry of filteredCustomers(); track entry.customer.id) {
+                    <tr>
+                      <td>
+                        <strong
+                          >{{ entry.customer.firstName }}
+                          {{ entry.customer.lastName }}</strong
+                        ><small>{{ entry.customer.email }}</small>
+                      </td>
+                      <td>{{ entry.customer.documentNumber }}</td>
+                      <td class="numeric">
+                        {{ entry.terms.creditLimit | number: "1.2-2" }}
+                        {{ entry.account.currency }}
+                      </td>
+                      <td class="numeric">
+                        {{ entry.account.used | number: "1.2-2" }}
+                      </td>
+                      <td>
+                        <span
+                          class="tag"
+                          [class.inactive]="!entry.customer.active"
+                          >{{
+                            entry.customer.active ? "Activo" : "Inactivo"
+                          }}</span
+                        >
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="text-button"
+                          (click)="openEditor('customer', entry)"
+                        >
+                          Editar condiciones
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="empty">
+                        No hay clientes que coincidan. Registra un cliente para
+                        comenzar.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        } @else if (page === "products") {
+          <div class="section-heading">
+            <div>
+              <h1>Catálogo</h1>
+              <p>Productos y servicios disponibles para financiar.</p>
+            </div>
+            <button type="button" (click)="openEditor('product')">
+              + Registrar producto
+            </button>
+          </div>
+          <section class="panel">
+            <fy-field
+              label="Buscar producto"
+              help="Filtra por nombre o código. Ejemplo: AR-01. Búsqueda sobre el catálogo de este comercio."
+              ><label class="sr-only" for="product-search"
+                >Buscar producto</label
+              ><input
+                id="product-search"
+                [(ngModel)]="query"
+                placeholder="Nombre o código"
+            /></fy-field>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto o servicio</th>
+                    <th>Código</th>
+                    <th class="numeric">Contado / base</th>
+                    <th class="numeric">Lista crédito</th>
+                    <th>Modalidad</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (product of filteredProducts(); track product.id) {
+                    <tr>
+                      <td>
+                        <div class="product-cell">
+                          @if (product.imageUrl) {
+                            <img
+                              [src]="product.imageUrl"
+                              [alt]="product.name"
+                              loading="lazy"
+                            />
+                          }
+                          <div>
+                            <strong>{{ product.name }}</strong
+                            ><small>{{ product.brand || product.unit }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ product.code }}</td>
+                      <td class="numeric">
+                        {{ product.cashPrice | number: "1.2-2" }}
+                        {{ product.currency }}
+                      </td>
+                      <td class="numeric">
+                        {{ product.creditPrice | number: "1.2-2" }}
+                      </td>
+                      <td>
+                        {{
+                          product.mode === "BOTH"
+                            ? "Ambas"
+                            : product.mode === "MONTH_END"
+                              ? "Fin de mes"
+                              : "Cuotas"
+                        }}
+                      </td>
+                      <td>
+                        <span class="tag" [class.inactive]="!product.active">{{
+                          product.active ? "Activo" : "Inactivo"
+                        }}</span>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="text-button"
+                          (click)="openEditor('product', product)"
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="7" class="empty">
+                        No hay productos que coincidan.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        } @else {
+          <div class="section-heading">
+            <div>
+              <h1>
+                {{
+                  page === "reports"
+                    ? "Reportes financieros"
+                    : "Así va tu comercio"
+                }}
+              </h1>
+              <p>
+                {{
+                  page === "reports"
+                    ? "Proyección contractual de cobros y registro de operaciones."
+                    : "Una mirada a tu cartera para decidir qué hacer hoy."
+                }}
+              </p>
+            </div>
+            <div class="heading-actions">
+              <fy-field
+                label="Moneda del resumen"
+                help="Consulta importes separados por moneda. Ejemplo: PEN. Los soles y dólares nunca se suman entre sí."
+                ><label class="sr-only" for="summary-currency"
+                  >Moneda del resumen</label
+                ><select id="summary-currency" [(ngModel)]="currency">
+                  <option value="PEN">Soles · PEN</option>
+                  <option value="USD">Dólares · USD</option>
+                </select></fy-field
+              ><button type="button" (click)="navigate('sales')">
+                + Nueva venta
+              </button>
+            </div>
+          </div>
+          @if (stats()) {
+            <div class="metrics">
+              <article class="primary-metric">
+                <span>Total por cobrar</span
+                ><strong>{{ money(stats().receivables) }}</strong
+                ><small>Capital, compensatorio y mora</small>
+              </article>
+              <article>
+                <span>Capital pendiente</span
+                ><strong>{{ money(stats().capital) }}</strong
+                ><small>Incluye gracia capitalizada</small>
+              </article>
+              <article>
+                <span>Cartera vencida</span
+                ><strong class="red">{{ money(stats().overdue) }}</strong
+                ><small>Obligaciones anteriores a hoy</small>
+              </article>
+              <article>
+                <span>Total recaudado</span
+                ><strong class="green">{{ money(stats().collected) }}</strong
+                ><small>Pagos completos registrados</small>
+              </article>
+            </div>
+            <div class="dashboard-grid">
+              <section class="panel">
+                <div class="section-heading">
+                  <div>
+                    <h2>Próximos vencimientos</h2>
+                    <p>Pagos programados desde la fecha operativa.</p>
+                  </div>
+                  <button
+                    class="text-button"
+                    type="button"
+                    (click)="navigate('accounts')"
+                  >
+                    Ver cuentas
+                  </button>
+                </div>
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Cuenta</th>
+                        <th>Vencimiento</th>
+                        <th>Cuota</th>
+                        <th class="numeric">Por cobrar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (
+                        obligation of stats().upcoming;
+                        track obligation.id
+                      ) {
+                        <tr>
+                          <td>
+                            <strong>Cuenta #{{ obligation.accountId }}</strong
+                            ><small>Compra #{{ obligation.purchaseId }}</small>
+                          </td>
+                          <td>
+                            {{ obligation.dueDate | date: "dd MMM yyyy" }}
+                          </td>
+                          <td>{{ obligation.number }}</td>
+                          <td class="numeric">
+                            <strong>{{ money(obligation.amount) }}</strong>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="4" class="empty">
+                            No hay próximos vencimientos. Las nuevas ventas
+                            aparecerán aquí.
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <aside class="panel portfolio">
+                <h2>Tu cartera en detalle</h2>
+                <dl>
+                  <dt>Clientes activos</dt>
+                  <dd>{{ dashboard.activeCustomers }}</dd>
+                  <dt>Interés compensatorio</dt>
+                  <dd>{{ money(stats().interest) }}</dd>
+                  <dt>Interés moratorio</dt>
+                  <dd>{{ money(stats().penalty) }}</dd>
+                </dl>
+                <div class="portfolio-note">
+                  <h3>Cada acuerdo queda guardado</h3>
+                  <p>
+                    Las compras conservan las tasas y precios pactados, incluso
+                    cuando actualizas las condiciones del cliente.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  class="secondary full"
+                  (click)="navigate('customers')"
+                >
+                  Gestionar clientes
+                </button>
+              </aside>
+            </div>
+            @if (page === "reports") {
+              <section class="panel spaced">
+                <div class="section-heading">
+                  <div>
+                    <h2>Proyección de ingresos por cobros</h2>
+                    <p>
+                      Importes contractuales pendientes por mes; no representan
+                      utilidad del negocio.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="secondary"
+                    (click)="closeCycles()"
+                  >
+                    Generar cierres pendientes
+                  </button>
+                </div>
+                <div class="projection">
+                  @for (
+                    month of stats().projection | keyvalue;
+                    track month.key
+                  ) {
+                    <div>
+                      <span>{{ month.key }}</span
+                      ><strong>{{ money(month.value) }}</strong>
+                    </div>
+                  } @empty {
+                    <p class="empty">Sin cobros pendientes que proyectar.</p>
+                  }
+                </div>
+              </section>
+              <fy-yield [storeId]="storeId" [customers]="customers" />
+              <section class="panel spaced">
+                <h2>Registro de operaciones</h2>
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Fecha real</th>
+                        <th>Acción</th>
+                        <th>Recurso</th>
+                        <th>Usuario</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (event of audit; track event.id) {
+                        <tr>
+                          <td>
+                            {{ event.occurredAt | date: "dd/MM/yyyy HH:mm" }}
+                          </td>
+                          <td>{{ event.action }}</td>
+                          <td>#{{ event.resource }}</td>
+                          <td>#{{ event.actorId }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            }
+          }
+        }
+        <footer class="app-footer">
+          <span>FiadoYa · Crédito comercial</span
+          ><span>Base 30/360 · America/Lima</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+}

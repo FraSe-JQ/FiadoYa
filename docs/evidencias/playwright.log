@@ -1,0 +1,17 @@
+
+> fiadoya-frontend@1.0.0 test:e2e
+> playwright test
+
+
+Running 4 tests using 1 worker
+
+(node:21384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\workflow.spec.ts:18:5 › registro, comercio, productos, cliente, compra francesa y pago con mora (15.1s)
+  ok 2 e2e\workflow.spec.ts:271:5 › cliente consulta únicamente sus cuentas en dos comercios (2.0s)
+  ok 3 e2e\workflow.spec.ts:302:5 › Swagger expone la API implementada (2.5s)
+  ok 4 e2e\workflow.spec.ts:312:5 › administrador de un comercio consulta solo su cuenta como cliente en otro (2.5s)
+
+  4 passed (24.7s)

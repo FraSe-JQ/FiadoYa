@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: mysql:8.4.7
+    environment:
+      MYSQL_DATABASE: fiadoya
+      MYSQL_USER: fiadoya
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Configure DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Configure DB_ROOT_PASSWORD}
+      TZ: America/Lima
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks: [database]
+    healthcheck:
+      test: [CMD-SHELL, 'mysqladmin ping -h localhost -u root -p"$$MYSQL_ROOT_PASSWORD" --silent']
+      interval: 5s
+      timeout: 5s
+      retries: 40
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/fiadoya?connectionTimeZone=America/Lima
+      DB_USER: fiadoya
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?Configure JWT_SECRET}
+      BOOTSTRAP_EMAIL: ${BOOTSTRAP_EMAIL:-}
+      BOOTSTRAP_PASSWORD: ${BOOTSTRAP_PASSWORD:-}
+      SPRING_PROFILES_ACTIVE: ${APP_PROFILE:-default}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4200}
+      TZ: America/Lima
+    depends_on:
+      mysql: {condition: service_healthy}
+    networks: [database,web]
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1:8080/actuator/health]
+      interval: 10s
+      timeout: 5s
+      start_period: 45s
+      retries: 30
+  frontend:
+    build: ./frontend
+    ports:
+      - "${HTTP_BIND:-127.0.0.1}:${HTTP_PORT:-4200}:80"
+    depends_on:
+      backend: {condition: service_healthy}
+    networks: [web]
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1/]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+volumes:
+  mysql_data:
+networks:
+  database: {internal: true}
+  web:

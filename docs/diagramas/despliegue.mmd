@@ -1,0 +1,12 @@
+flowchart TB
+  Browser[Navegador del usuario]
+  subgraph Docker[Equipo local Docker / VM Ubuntu propuesta]
+    Nginx[Frontend Nginx · puerto publicado 4200]
+    API[API Java 21 · puerto interno 8080]
+    DB[(MySQL 8.4.7 · puerto interno 3306)]
+    Disk[(Volumen persistente mysql_data)]
+    Nginx -->|red web / HTTP| API
+    API -->|red database interna / JDBC| DB
+    DB --- Disk
+  end
+  Browser -->|HTTP local / HTTPS propuesto con TLS| Nginx

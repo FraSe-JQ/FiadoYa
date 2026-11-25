@@ -1,0 +1,227 @@
+erDiagram
+  audit_logs {
+    bigint id PK
+    bigint actor_id FK
+    bigint store_id FK
+    varchar_255_ action
+    varchar_255_ resource
+    datetime_6_ occurred_at
+  }
+  auth_sessions {
+    bigint id PK
+    bigint user_id FK
+    varchar_255_ token_id UK
+    datetime_6_ expires_at
+    bit_1_ revoked
+  }
+  billing_cycles {
+    bigint id PK
+    bigint store_id FK
+    bigint account_id FK
+    datetime_6_ cutoff
+    datetime_6_ generated_at
+    longtext snapshot_json
+  }
+  credit_accounts {
+    bigint id PK
+    bigint store_id FK
+    bigint customer_id UK
+    varchar_255_ currency
+    decimal_24_10_ used
+  }
+  credit_terms {
+    bigint id PK
+    bigint account_id FK
+    varchar_255_ currency
+    decimal_24_10_ credit_limit
+    int max_months
+    int cutoff_day
+    time_6_ cutoff_time
+    int payment_day
+    decimal_24_10_ compensatory_percent
+    varchar_255_ compensatory_type
+    int compensatory_period
+    int compensatory_capitalization
+    decimal_24_10_ penalty_percent
+    varchar_255_ penalty_type
+    int penalty_period
+    int penalty_capitalization
+    datetime_6_ created_at
+  }
+  customers {
+    bigint id PK
+    bigint store_id FK
+    bigint user_id FK
+    varchar_255_ document_type
+    varchar_255_ document_number
+    varchar_255_ first_name
+    varchar_255_ last_name
+    varchar_255_ email
+    varchar_255_ phone
+    varchar_255_ address
+    bit_1_ consent
+    bit_1_ active
+  }
+  flyway_schema_history {
+    int installed_rank PK
+    varchar_50_ version
+    varchar_200_ description
+    varchar_20_ type
+    varchar_1000_ script
+    int checksum
+    varchar_100_ installed_by
+    timestamp installed_on
+    int execution_time
+    tinyint_1_ success
+  }
+  help_articles {
+    bigint id PK
+    varchar_255_ title
+    longtext content
+  }
+  interest_rate_limits {
+    bigint id PK
+    varchar_255_ currency
+    varchar_255_ kind
+    decimal_24_10_ max_tea_percent
+    date valid_from
+    date valid_until
+    varchar_255_ source
+  }
+  payment_allocations {
+    bigint id PK
+    bigint payment_id FK
+    bigint obligation_id UK
+    decimal_24_10_ penalty
+    decimal_24_10_ interest
+    decimal_24_10_ principal
+  }
+  payment_obligations {
+    bigint id PK
+    bigint store_id FK
+    bigint account_id FK
+    bigint purchase_id FK
+    int number
+    date due_date
+    decimal_24_10_ opening
+    decimal_24_10_ interest
+    decimal_24_10_ principal
+    decimal_24_10_ amount
+    decimal_24_10_ closing
+    bit_1_ paid
+  }
+  payments {
+    bigint id PK
+    bigint store_id FK
+    bigint account_id FK
+    bigint actor_id FK
+    varchar_255_ request_key
+    varchar_255_ request_hash
+    date paid_at
+    decimal_24_10_ received
+    decimal_24_10_ penalty
+    decimal_24_10_ interest
+    decimal_24_10_ principal
+    decimal_24_10_ remaining_capital
+    varchar_255_ method
+  }
+  products {
+    bigint id PK
+    bigint store_id FK
+    varchar_255_ code
+    varchar_255_ name
+    varchar_255_ description
+    varchar_255_ supplier
+    varchar_255_ brand
+    varchar_255_ unit
+    varchar_1000_ image_url
+    decimal_24_10_ cash_price
+    decimal_24_10_ credit_price
+    varchar_255_ currency
+    varchar_255_ mode
+    bit_1_ active
+  }
+  purchase_items {
+    bigint id PK
+    bigint purchase_id FK
+    bigint product_id FK
+    varchar_255_ product_name
+    decimal_24_10_ quantity
+    decimal_24_10_ cash_price
+    decimal_24_10_ credit_price
+    decimal_24_10_ unit_price
+    decimal_24_10_ subtotal
+  }
+  purchases {
+    bigint id PK
+    bigint store_id FK
+    bigint account_id FK
+    bigint actor_id FK
+    varchar_255_ request_key
+    varchar_255_ request_hash
+    datetime_6_ purchased_at
+    varchar_255_ mode
+    int months
+    varchar_255_ currency
+    decimal_24_10_ financed
+    decimal_24_10_ capitalized
+    decimal_24_10_ grace_interest
+    datetime_6_ cutoff
+    date period_zero
+    longtext terms_json
+  }
+  store_memberships {
+    bigint id PK
+    bigint store_id FK
+    bigint user_id FK
+  }
+  stores {
+    bigint id PK
+    varchar_255_ name
+    varchar_255_ business_type
+    varchar_255_ address
+    varchar_255_ phone
+    bit_1_ active
+  }
+  support_tickets {
+    bigint id PK
+    bigint user_id FK
+    varchar_255_ subject
+    longtext message
+    datetime_6_ created_at
+  }
+  users {
+    bigint id PK
+    varchar_255_ email UK
+    varchar_255_ password_hash
+    varchar_255_ name
+    varchar_255_ role
+    bit_1_ active
+  }
+  users |o--o{ audit_logs : actor_id
+  stores |o--o{ audit_logs : store_id
+  users |o--o{ auth_sessions : user_id
+  credit_accounts |o--o{ billing_cycles : account_id
+  stores |o--o{ billing_cycles : store_id
+  customers |o--o| credit_accounts : customer_id
+  stores |o--o{ credit_accounts : store_id
+  credit_accounts |o--o{ credit_terms : account_id
+  stores |o--o{ customers : store_id
+  users |o--o{ customers : user_id
+  payment_obligations |o--o| payment_allocations : obligation_id
+  payments |o--o{ payment_allocations : payment_id
+  credit_accounts |o--o{ payment_obligations : account_id
+  purchases |o--o{ payment_obligations : purchase_id
+  stores |o--o{ payment_obligations : store_id
+  credit_accounts ||--o{ payments : account_id
+  users |o--o{ payments : actor_id
+  stores ||--o{ payments : store_id
+  stores |o--o{ products : store_id
+  products |o--o{ purchase_items : product_id
+  purchases |o--o{ purchase_items : purchase_id
+  credit_accounts ||--o{ purchases : account_id
+  users |o--o{ purchases : actor_id
+  stores ||--o{ purchases : store_id
+  stores |o--o{ store_memberships : store_id
+  users |o--o{ store_memberships : user_id
+  users |o--o{ support_tickets : user_id

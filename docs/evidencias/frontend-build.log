@@ -1,0 +1,16 @@
+
+> fiadoya-frontend@1.0.0 build
+> ng build --configuration production
+
+> Building...
+√ Building...
+Initial chunk files | Names         |  Raw size | Estimated transfer size
+main-SXRO4FOQ.js    | main          | 292.90 kB |                77.29 kB
+styles-SUPINGK2.css | styles        |  27.73 kB |                 5.38 kB
+
+                    | Initial total | 320.63 kB |                82.67 kB
+
+Application bundle generation complete. [10.495 seconds] - 2026-11-25T00:40:15.097Z
+
+Output location: D:\DB\FiadoYa\frontend\dist\fiadoya
+
